@@ -27,8 +27,8 @@ ENV/
 env/
 .env
 
-# Model files (too large for git)
-*.gguf
+# Model files (large files - gguf tracked via Git LFS)
+# *.gguf  # Now tracked by Git LFS
 *.bin
 *.safetensors
 *.pth
