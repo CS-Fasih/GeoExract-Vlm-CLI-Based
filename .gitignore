@@ -64,3 +64,16 @@ data/
 datasets/
 outputs/
 checkpoints/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backend uploads
+backend/uploads/
+
+# Frontend build
+frontend/dist/
+frontend/.vite/
