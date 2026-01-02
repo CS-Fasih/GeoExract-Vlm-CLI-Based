@@ -1,16 +1,15 @@
-# 🛰️ GeoExtract-VLM: Satellite Imagery Analysis Web Application
+# 🛰️ GeoExtract-VLM: Satellite Imagery Analysis using Vision Language Models
 
 <div align="center">
 
-![React](https://img.shields.io/badge/React-18+-61DAFB.svg?logo=react)
-![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?logo=node.js)
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python)
-![MongoDB](https://img.shields.io/badge/MongoDB-6+-47A248.svg?logo=mongodb)
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)
 
-**A ChatGPT-like web application for satellite imagery analysis using Vision Language Models**
+**A Vision Language Model fine-tuned for geospatial analysis and satellite imagery interpretation**
 
-[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Architecture](#architecture) • [Roadmap](#roadmap)
+[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Model Architecture](#model-architecture) • [Roadmap](#roadmap)
 
 </div>
 
@@ -18,7 +17,7 @@
 
 ## 🎯 Overview
 
-GeoExtract-VLM is a full-stack web application that brings the power of Vision Language Models to satellite imagery analysis. Built with the MERN stack (MongoDB, Express, React, Node.js) and powered by a fine-tuned Qwen2-VL model, it provides a ChatGPT-like conversational interface for geospatial analysis.
+GeoExtract-VLM is a specialized Vision Language Model designed for automated analysis of satellite and aerial imagery. Built on the Qwen2-VL architecture, this model enables natural language querying of geospatial data, making satellite imagery analysis accessible through conversational AI.
 
 ### Key Capabilities
 
@@ -26,7 +25,7 @@ GeoExtract-VLM is a full-stack web application that brings the power of Vision L
 - 🏘️ **Urban Density Assessment** - Analyze population density and urban development patterns
 - 🛣️ **Infrastructure Analysis** - Detect roads, transportation networks, and utilities
 - 🌍 **Land Use Classification** - Categorize areas as residential, commercial, industrial, etc.
-- 💬 **Conversational AI Interface** - ChatGPT-like experience for image analysis
+- 📝 **Natural Language Interaction** - Ask questions about images in plain English
 
 ---
 
@@ -34,16 +33,11 @@ GeoExtract-VLM is a full-stack web application that brings the power of Vision L
 
 | Feature | Description |
 |---------|-------------|
-| **ChatGPT-like UI** | Modern, responsive chat interface |
-| **Image Upload** | Drag & drop satellite imagery |
-| **Chat History** | MongoDB-backed conversation storage |
-| **Dark/Light Mode** | Toggle between themes |
-| **Real-time Analysis** | Instant VLM-powered responses |
-| **GGUF Model** | Optimized for CPU inference |
-
-<div align="center">
-<img src="docs/screenshot.png" alt="GeoExtract-VLM Screenshot" width="800"/>
-</div>
+| **CLI Interface** | Interactive terminal-based image analysis |
+| **GGUF Format** | Optimized for CPU inference, no GPU required |
+| **Chain-of-Thought** | Structured reasoning for accurate analysis |
+| **Lightweight** | ~1GB model size with 4-bit quantization |
+| **Offline Ready** | Works without internet connection |
 
 ---
 
@@ -51,10 +45,9 @@ GeoExtract-VLM is a full-stack web application that brings the power of Vision L
 
 ### Prerequisites
 
-- Node.js 18+
-- Python 3.10+
-- MongoDB (optional, for chat history)
+- Python 3.10 or higher
 - 4GB+ RAM recommended
+- ~2GB disk space
 
 ### Quick Start
 
@@ -62,98 +55,112 @@ GeoExtract-VLM is a full-stack web application that brings the power of Vision L
 # Clone the repository
 git clone https://github.com/CS-Fasih/GeoExract-Vlm-CLI-Based.git
 cd GeoExract-Vlm-CLI-Based
-```
 
-#### 1️⃣ Backend Setup
-
-```bash
-cd backend
-
-# Install Node.js dependencies
-npm install
-
-# Install Python dependencies (for model service)
-pip install -r requirements.txt
-
-# Start the Express server
-npm run dev
-
-# In a new terminal, start the model service
-python model_service.py
-```
-
-#### 2️⃣ Frontend Setup
-
-```bash
-cd frontend
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or: venv\Scripts\activate  # Windows
 
 # Install dependencies
-npm install
+pip install -r requirements.txt
 
-# Start development server
-npm run dev
+# Run the CLI
+python vlm_inference.py
 ```
 
-#### 3️⃣ Access the Application
+### Model Download
 
-Open your browser and navigate to: **http://localhost:5173**
+The GGUF model file (~940MB) needs to be downloaded separately:
+```bash
+# Download from releases or contact maintainer
+# Place in project root: qwen2vl-satellite-q4_k_m.gguf
+```
 
 ---
 
 ## 💻 Usage
 
-### Web Interface
+### Interactive CLI Mode
 
-1. **Upload Image**: Click the 📷 button to upload a satellite image
-2. **Ask Questions**: Type your query in the chat input
-3. **Get Analysis**: Receive detailed VLM-powered analysis
-4. **View History**: Access previous conversations in the sidebar
+```bash
+python vlm_inference.py
+```
+
+**Menu Options:**
+```
+[1] 📷 Load Image & Ask Questions
+[2] 🔍 Quick Auto-Analysis
+[3] 💬 Text Chat Mode
+[4] 📊 Model Information
+[5] 🚪 Exit
+```
 
 ### Example Queries
 
+```python
+# Building Analysis
+"How many buildings can you identify in this satellite image?"
+
+# Urban Density
+"Assess the urban density and development pattern in this area"
+
+# Infrastructure
+"Identify the road network and transportation infrastructure"
+
+# Land Classification
+"What type of land use is predominant in this image?"
 ```
-🏢 "How many buildings can you identify in this image?"
-🏘️ "Analyze the urban density and development pattern"
-🛣️ "Identify the road network and infrastructure"
-🌍 "What type of land use is predominant?"
+
+### Programmatic Usage
+
+```python
+from llama_cpp import Llama
+
+# Load model
+model = Llama(
+    model_path="qwen2vl-satellite-q4_k_m.gguf",
+    n_ctx=2048,
+    n_threads=4
+)
+
+# Analyze
+prompt = """<|im_start|>system
+You are a geospatial analyst specializing in satellite imagery.<|im_end|>
+<|im_start|>user
+Describe the urban features in this satellite image.<|im_end|>
+<|im_start|>assistant
+"""
+
+response = model(prompt, max_tokens=512)
+print(response['choices'][0]['text'])
 ```
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Model Architecture
+
+| Component | Specification |
+|-----------|--------------|
+| **Base Model** | Qwen2-VL-2B-Instruct |
+| **Fine-tuning Method** | QLoRA (4-bit quantization) |
+| **LoRA Rank** | 64 |
+| **Training Framework** | Transformers + PEFT |
+| **Export Format** | GGUF (llama.cpp compatible) |
+| **Quantization** | q4_k_m |
+| **Model Size** | ~940MB |
+
+### Training Pipeline
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Frontend (React)                         │
-│                    http://localhost:5173                         │
-└────────────────────────────┬────────────────────────────────────┘
-                             │ HTTP/REST
-┌────────────────────────────▼────────────────────────────────────┐
-│                    Backend (Express.js)                          │
-│                    http://localhost:5000                         │
-│  • File uploads (Multer)                                         │
-│  • Chat API endpoints                                            │
-│  • MongoDB integration                                           │
-└────────────────────────────┬────────────────────────────────────┘
-                             │ HTTP
-┌────────────────────────────▼────────────────────────────────────┐
-│                  Model Service (FastAPI)                         │
-│                    http://localhost:8000                         │
-│  • GGUF model loading                                            │
-│  • Image + text inference                                        │
-│  • llama-cpp-python                                              │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Data           │────▶│  Fine-tuning    │────▶│  Export         │
+│  Acquisition    │     │  with QLoRA     │     │  to GGUF        │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+        │                       │                       │
+        ▼                       ▼                       ▼
+   SpaceNet               Qwen2-VL-2B              q4_k_m
+   Dataset               + LoRA Adapters          Quantized
 ```
-
-### Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | React 18, Vite, Axios, Lucide Icons |
-| **Backend** | Node.js, Express.js, Multer, Mongoose |
-| **Model Service** | Python, FastAPI, llama-cpp-python |
-| **Database** | MongoDB |
-| **AI Model** | Qwen2-VL-2B (GGUF q4_k_m) |
 
 ---
 
@@ -161,89 +168,62 @@ Open your browser and navigate to: **http://localhost:5173**
 
 ```
 GeoExtract-VLM/
-├── 📂 frontend/                 # React application
-│   ├── src/
-│   │   ├── App.jsx             # Main chat component
-│   │   └── App.css             # ChatGPT-like styles
-│   └── package.json
-│
-├── 📂 backend/                  # Express + Python services
-│   ├── server.js               # Express API server
-│   ├── model_service.py        # FastAPI model service
-│   ├── requirements.txt        # Python dependencies
-│   └── package.json            # Node dependencies
-│
-├── 📂 training/                 # Model training scripts
-│   ├── step1_data_acquisition.py
-│   ├── step2_preprocessing.py
-│   ├── step3_finetuning.py
-│   ├── step4_inference.py
-│   └── step5_export_gguf.py
-│
-├── 📓 VLM_Satellite_Complete_Pipeline.ipynb
-├── 🤖 qwen2vl-satellite-q4_k_m.gguf  # Fine-tuned model
-├── 📄 LICENSE
-└── 📄 README.md
+├── 📄 vlm_inference.py          # Interactive CLI application
+├── 📄 step1_data_acquisition.py # Data download scripts
+├── 📄 step2_preprocessing.py    # Dataset preparation
+├── 📄 step3_finetuning.py       # Model training
+├── 📄 step4_inference.py        # Inference utilities
+├── 📄 step5_export_gguf.py      # GGUF export pipeline
+├── 📓 VLM_Satellite_Complete_Pipeline.ipynb  # Full training notebook
+├── 📄 requirements.txt          # Python dependencies
+├── 📄 .gitignore               # Git ignore rules
+└── 📄 README.md                # Documentation
 ```
 
 ---
 
 ## 🗺️ Roadmap
 
-### Phase 1: Core Web Application ✅
-- [x] Fine-tuned VLM model (Qwen2-VL-2B)
-- [x] React frontend with ChatGPT-like UI
-- [x] Express.js backend with file uploads
-- [x] FastAPI model service
-- [x] Dark/Light mode support
-- [x] Basic chat functionality
+### Phase 1: CLI Application ✅
+- [x] Fine-tuned VLM model
+- [x] Interactive terminal interface
+- [x] GGUF export for CPU inference
+- [x] Basic image analysis capabilities
 
-### Phase 2: Enhanced Features (In Progress)
-- [ ] User authentication (JWT)
-- [ ] Chat history persistence
-- [ ] Image gallery/history
-- [ ] Export analysis reports
-- [ ] Batch image processing
+### Phase 2: Enhanced Model (In Progress)
+- [ ] Expand training dataset (multi-region coverage)
+- [ ] Improve building detection accuracy
+- [ ] Add segmentation capabilities
+- [ ] Multi-language support
 
-### Phase 3: Advanced Integration (Planned)
+### Phase 3: Full-Stack Web Application (Planned)
+- [ ] REST API backend (FastAPI/Flask)
+- [ ] React/Next.js frontend
 - [ ] Map integration (Leaflet/Mapbox)
-- [ ] Drawing tools for ROI selection
-- [ ] GeoJSON/KML export
-- [ ] Multi-image comparison
-- [ ] Time-series analysis
+- [ ] User authentication
+- [ ] Batch processing support
+- [ ] Cloud deployment (AWS/GCP)
 
-### Phase 4: Production Ready (Future)
-- [ ] Docker containerization
-- [ ] Kubernetes deployment
-- [ ] Cloud hosting (AWS/GCP/Azure)
-- [ ] API rate limiting
-- [ ] Admin dashboard
-- [ ] Mobile responsive optimization
+### Phase 4: Advanced Features (Future)
+- [ ] Real-time satellite feed analysis
+- [ ] Change detection over time
+- [ ] Custom region training
+- [ ] Mobile application
 
 ---
 
-## 🔧 Configuration
+## 🔧 Technical Requirements
 
-### Environment Variables
+### Hardware (Minimum)
+- **CPU**: 4+ cores recommended
+- **RAM**: 4GB minimum, 8GB recommended
+- **Storage**: 2GB free space
 
-**Backend (.env)**
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/geoextract
-MODEL_SERVICE_URL=http://localhost:8000
-```
-
-### Model Configuration
-
-The GGUF model is loaded with these settings:
-```python
-Llama(
-    model_path="qwen2vl-satellite-q4_k_m.gguf",
-    n_ctx=2048,      # Context window
-    n_threads=4,     # CPU threads
-    n_gpu_layers=0   # CPU-only inference
-)
-```
+### Software
+- Python 3.10+
+- llama-cpp-python
+- Pillow
+- rich (for CLI UI)
 
 ---
 
@@ -251,10 +231,9 @@ Llama(
 
 | Metric | Value |
 |--------|-------|
-| Frontend Load Time | < 1 second |
-| API Response Time | < 100ms (without model) |
-| Model Inference | 20-60 seconds (CPU) |
+| Inference Time (CPU) | 20-60 seconds |
 | Memory Usage | ~2GB |
+| Model Load Time | ~5 seconds |
 
 ---
 
@@ -286,8 +265,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [Qwen2-VL](https://github.com/QwenLM/Qwen2-VL) - Base model architecture
+- [SpaceNet](https://spacenet.ai/) - Satellite imagery dataset
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - GGUF format and inference
-- [OpenAI ChatGPT](https://chat.openai.com) - UI inspiration
 - [Hugging Face](https://huggingface.co/) - Transformers library
 
 ---
